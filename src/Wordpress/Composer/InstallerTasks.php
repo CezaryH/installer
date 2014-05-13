@@ -142,7 +142,8 @@ class InstallerTasks {
             $wpConfigParams,
             $wpConfig
         );
-
+		
+		rename( 'wordpress', $params['wordpress_coredir']);
         // Write the wp-config.php file.
         file_put_contents($params['wordpress_coredir'] . '/wp-config.php', $wpConfig);
     }
