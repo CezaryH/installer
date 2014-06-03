@@ -36,7 +36,7 @@ class InstallerTasks {
             'db_host'            => 'localhost',
             'db_name'            => 'wordpress',
             'db_user'            => 'root',
-            'db_pass'            => '',
+            'db_pass'            => 'root',
             'db_charset'         => 'utf8',
             'db_collate'         => '',
             'db_prefix'          => 'wp_',
@@ -46,9 +46,29 @@ class InstallerTasks {
             'disallow_file_edit' => false,
             'wp_contenturl'      => null,
             'wp_content_dir'     => null,
+			'wp_uploads_dir'	 => null,
+            'wp_post_revisions'  => false,
+            'wp_cache' 			 => false,
+            'autosave_interval'  => 360,
+            'cache_exp_time' 	 => 0
         ),
     );
-
+	
+	private static function array_extend($a, $b) {
+		foreach($b as $k=>$v) {
+			if( is_array($v) ) {
+				if( !isset($a[$k]) ) {
+					$a[$k] = $v;
+				} else {
+					$a[$k] = InstallerTasks::array_extend($a[$k], $v);
+				}
+			} else {
+				$a[$k] = $v;
+			}
+		}
+		return $a;
+	}
+	
     /**
      * Generate a wp-config.php and place it into
      * the wordpress core folder.
@@ -61,26 +81,12 @@ class InstallerTasks {
     {
         // Get the params from the class and merge
         // any defined inside composer.json file.
-        $params = self::$params;
+        //$params = self::$params;
         $extra  = $event->getComposer()->getPackage()->getExtra();
 
         if (is_array($extra))
         {
-            $params['wordpress_coredir'] = (isset($extra['wordpress_coredir']))
-                ? $extra['wordpress_coredir']
-                : $params['wordpress_coredir'];
-
-            $params['wordpress_wp_contentdir'] = (isset($extra['wordpress_wp_contentdir']))
-                ? $extra['wordpress_wp_contentdir']
-                : $params['wordpress_wp_contentdir'];
-
-            if (isset($extra['wordpress_wp_config']))
-            {
-                $params['wordpress_wp_config'] = array_merge(
-                    self::$params['wordpress_wp_config'],
-                    $extra['wordpress_wp_config']
-                );
-            }
+			$params = InstallerTasks::array_extend(self::$params, $extra);
         }
 
         // Set the wp content url
@@ -108,7 +114,7 @@ class InstallerTasks {
         // Set the wp content directory.
         if ( ! is_null($params['wordpress_wp_config']['wp_content_dir']))
         {
-            $wpConfigContentDir = "'" . $params['wordpress_wp_config']['wp_content_dir'] . "'";
+            $wpConfigContentDir = "__DIR__ . '/../" . $params['wordpress_wp_config']['wp_content_dir'] . "'";
         }
         else
         {
@@ -131,6 +137,12 @@ class InstallerTasks {
             ':wp_content_url'          => $wpContentUrl,
             ':auth_keys'               => $authKeys,
             ':vendor_dir'              => $event->getComposer()->getConfig()->get('vendor-dir'),
+			':wp_uploads_dir'		   => $params['wordpress_wp_config']['wp_uploads_dir'] ? 'true' : 'false',
+            ':wp_post_revisions'	   => $params['wordpress_wp_config']['wp_post_revisions'] ? 'true' : 'false',
+            ':wp_cache' 			   => (false !== $params['wordpress_wp_config']['wp_cache']) ? 'true' : 'false',
+            ':autosave_interval'  	   => ( 0 == $params['wordpress_wp_config']['autosave_interval'] ) ? '0' : $params['wordpress_wp_config']['autosave_interval'],
+            ':cache_exp_time'		   => $params['wordpress_wp_config']['cache_exp_time'],
+            ':WP_DEFAULT_THEME'		   => $params['wordpress_wp_config']['WP_DEFAULT_THEME']
         );
 
         // Get the wp-config template file content.
@@ -142,8 +154,7 @@ class InstallerTasks {
             $wpConfigParams,
             $wpConfig
         );
-		
-		rename( 'wordpress', $params['wordpress_coredir']);
+
         // Write the wp-config.php file.
         file_put_contents($params['wordpress_coredir'] . '/wp-config.php', $wpConfig);
     }
