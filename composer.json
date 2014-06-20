@@ -1,5 +1,5 @@
 {
-    "name": "wordpress/installer",
+    "name": "wordpress/chinstaller",
     "description": "Wordpress composer installer.",
     "type": "composer-installer",
     "authors": [
