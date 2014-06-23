@@ -1,5 +1,5 @@
 {
-    "name": "wordpress/installer",
+    "name": "CezaryH/installer",
     "description": "Wordpress composer installer.",
     "type": "composer-installer",
     "authors": [
