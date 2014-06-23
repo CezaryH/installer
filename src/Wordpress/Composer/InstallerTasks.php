@@ -51,7 +51,7 @@ class InstallerTasks {
             'wp_cache' 			 => false,
             'autosave_interval'  => 360,
             'cache_exp_time' 	 => 0
-        ),
+        )
     );
 	
 	private static function array_extend($a, $b) {
