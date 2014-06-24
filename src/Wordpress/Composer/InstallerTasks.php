@@ -44,7 +44,6 @@ class InstallerTasks {
             'wp_lang'            => '',
             'wp_debug'           => false,
             'disallow_file_edit' => false,
-            'wp_contenturl'      => null,
 			'wp_uploads_dir'	 => null,
             'wp_post_revisions'  => false,
             'wp_cache' 			 => false,
@@ -88,9 +87,6 @@ class InstallerTasks {
 			$params = InstallerTasks::array_extend(self::$params, $extra);
         }
 
-        // Set the wp content url
-        $wpContentUrl = (is_null($params['wordpress_wp_config']['wp_contenturl'])) ? (rtrim($params['wordpress_wp_config']['site_url'], '/') . '/wp-content') : $params['wordpress_wp_config']['wp_contenturl'];
-
         // Generate the auth salts or use default values.
         if (true === $params['wordpress_wp_config']['generate_auth_keys'])
         {
@@ -123,13 +119,11 @@ class InstallerTasks {
             ':wp_lang'                 => $params['wordpress_wp_config']['wp_lang'],
             ':wp_debug'                => (false !== $params['wordpress_wp_config']['wp_debug']) ? 'true' : 'false',
             ':disallow_file_edit'      => (false !== $params['wordpress_wp_config']['disallow_file_edit']) ? 'true' : 'false',
-            ':wp_content_url'          => $wpContentUrl,
             ':auth_keys'               => $authKeys,
             ':vendor_dir'              => $event->getComposer()->getConfig()->get('vendor-dir'),
-			':wp_uploads_dir'		   => $params['wordpress_wp_config']['wp_uploads_dir'] ? 'true' : 'false',
-            ':wp_post_revisions'	   => $params['wordpress_wp_config']['wp_post_revisions'] ? 'true' : 'false',
-            //':wp_cache' 			   => (false !== $params['wordpress_wp_config']['wp_cache']) ? 'true' : 'false',
-			'wp_cache'				   => (string) $params['wordpress_wp_config']['wp_cache'],
+			':wp_uploads_dir'		   => $params['wordpress_wp_config']['wp_uploads_dir'],
+            ':wp_post_revisions'	   => (false !== $params['wordpress_wp_config']['wp_post_revisions']) ? 'true' : 'false',
+			':wp_cache'				   => (false !== $params['wordpress_wp_config']['wp_cache']) ? 'true' : 'false',
             ':autosave_interval'  	   => $params['wordpress_wp_config']['autosave_interval'],
             ':cache_exp_time'		   => $params['wordpress_wp_config']['cache_exp_time'],
             ':WP_DEFAULT_THEME'		   => $params['wordpress_wp_config']['WP_DEFAULT_THEME']
