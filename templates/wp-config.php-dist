@@ -85,17 +85,26 @@ define('WP_DEBUG_LOG', true);
 define('WP_DEBUG_DISPLAY', :wp_debug);
 define('SAVEQUERIES', true);
 
-define('WP_CONTENT_DIR', realpath(:wp_content_dir));
-define('WP_PLUGIN_DIR', realpath(:wp_content_dir) . '/plugins');
-define('PLUGINDIR', realpath(:wp_content_dir) . '/plugins');
+define('WP_CONTENT_DIR', dirname( __FILE__ ) . "/:wp_content_dir");
+define('WP_CONTENT_URL', 'http://' . $_SERVER['HTTP_HOST'] . '/:wp_content_url');
+
+define('WP_PLUGIN_DIR', WP_CONTENT_DIR . '/plugins');
+define('PLUGINDIR', WP_CONTENT_DIR . '/plugins');
+
 define('WP_SITEURL', ':site_url');
 define('WP_HOME', ':site_url');
-define('WP_CONTENT_URL', ':wp_content_url');
-define('WP_PLUGIN_URL', ':wp_content_url/plugins');
-define('UPLOADS', '', ':wp_uploads_dir');
+
+define('WP_PLUGIN_URL', WP_CONTENT_URL . '/plugins');
+define('UPLOADS', '', WP_CONTENT_URL . '/uploads');
 define('DISALLOW_FILE_EDIT', :disallow_file_edit);
 
 define('WP_DEFAULT_THEME', ':WP_DEFAULT_THEME');
+
+// ======================================
+// Load a Memcached config if we have one
+// ======================================
+if ( file_exists( dirname( __FILE__ ) . '/memcached.php' ) )
+$memcached_servers = include( dirname( __FILE__ ) . '/memcached.php' );
 
 if (is_file(__DIR__ . '/../../../:vendor_dir/autoload.php'))
 {
@@ -104,9 +113,9 @@ if (is_file(__DIR__ . '/../../../:vendor_dir/autoload.php'))
 
 /* That's all, stop editing! Happy blogging. */
 
-/** Absolute path to the WordPress directory. */
-if ( !defined('ABSPATH') )
-    define('ABSPATH', dirname(__FILE__) . '/');
-
-/** Sets up WordPress vars and included files. */
-require_once(ABSPATH . 'wp-settings.php');
+// ===================
+// Bootstrap WordPress
+// ===================
+if ( !defined( 'ABSPATH' ) )
+define( 'ABSPATH', dirname( __FILE__ ) . '/wp/' );
+require_once( ABSPATH . 'wp-settings.php' );

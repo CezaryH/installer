@@ -28,10 +28,10 @@ class InstallerTasks {
      * @var array
      */
     public static $params = array(
-        'wordpress_wp_contentdir' => 'wordpress/wp-content',
-        'wordpress_coredir'       => 'wordpress/core',
-        'vendor-dir'              => null,
-        'wordpress_wp_config'     => array(
+        'wordpress_wp_config'    => array(
+			'wp_content_dir'	 => 'wordpress/wp-content',
+			'wp_core_dir'        => 'wordpress/core',
+			'vendor-dir'         => null,		
             'site_url'           => 'http://localhost',
             'db_host'            => 'localhost',
             'db_name'            => 'wordpress',
@@ -45,7 +45,6 @@ class InstallerTasks {
             'wp_debug'           => false,
             'disallow_file_edit' => false,
             'wp_contenturl'      => null,
-            'wp_content_dir'     => null,
 			'wp_uploads_dir'	 => null,
             'wp_post_revisions'  => false,
             'wp_cache' 			 => false,
@@ -90,9 +89,7 @@ class InstallerTasks {
         }
 
         // Set the wp content url
-        $wpContentUrl = (is_null($params['wordpress_wp_config']['wp_contenturl']))
-            ? (rtrim($params['wordpress_wp_config']['site_url'], '/') . '/wp-content')
-            : $params['wordpress_wp_config']['wp_contenturl'];
+        $wpContentUrl = (is_null($params['wordpress_wp_config']['wp_contenturl'])) ? (rtrim($params['wordpress_wp_config']['site_url'], '/') . '/wp-content') : $params['wordpress_wp_config']['wp_contenturl'];
 
         // Generate the auth salts or use default values.
         if (true === $params['wordpress_wp_config']['generate_auth_keys'])
@@ -101,7 +98,7 @@ class InstallerTasks {
         }
         else
         {
-            $authKeys = "define('AUTH_KEY',         'put your unique phrase here');\n"
+            $authKeys = "define('AUTH_KEY',   'put your unique phrase here');\n"
                 . "define('SECURE_AUTH_KEY',  'put your unique phrase here');\n"
                 . "define('LOGGED_IN_KEY',    'put your unique phrase here');\n"
                 . "define('NONCE_KEY',        'put your unique phrase here');\n"
@@ -111,18 +108,10 @@ class InstallerTasks {
                 . "define('NONCE_SALT',       'put your unique phrase here');\n";
         }
 
-        // Set the wp content directory.
-        if ( ! is_null($params['wordpress_wp_config']['wp_content_dir']))
-        {
-            $wpConfigContentDir = "__DIR__ . '/../" . $params['wordpress_wp_config']['wp_content_dir'] . "'";
-        }
-        else
-        {
-            $wpConfigContentDir = '__DIR__ . \'/wp-content\'';
-        }
 
         $wpConfigParams = array(
-            ':wp_content_dir'          => $wpConfigContentDir,
+            ':wp_content_dir'          => $params['wordpress_wp_config']['wp_content_dir'],
+			':wp_core_dir'             => $params['wordpress_wp_config']['wp_core_dir'],
             ':site_url'                => $params['wordpress_wp_config']['site_url'],
             ':db_host'                 => $params['wordpress_wp_config']['db_host'],
             ':db_name'                 => $params['wordpress_wp_config']['db_name'],
@@ -139,15 +128,16 @@ class InstallerTasks {
             ':vendor_dir'              => $event->getComposer()->getConfig()->get('vendor-dir'),
 			':wp_uploads_dir'		   => $params['wordpress_wp_config']['wp_uploads_dir'] ? 'true' : 'false',
             ':wp_post_revisions'	   => $params['wordpress_wp_config']['wp_post_revisions'] ? 'true' : 'false',
-            ':wp_cache' 			   => (false !== $params['wordpress_wp_config']['wp_cache']) ? 'true' : 'false',
-            ':autosave_interval'  	   => ( 0 == $params['wordpress_wp_config']['autosave_interval'] ) ? '0' : $params['wordpress_wp_config']['autosave_interval'],
+            //':wp_cache' 			   => (false !== $params['wordpress_wp_config']['wp_cache']) ? 'true' : 'false',
+			'wp_cache'				   => (string) $params['wordpress_wp_config']['wp_cache'],
+            ':autosave_interval'  	   => $params['wordpress_wp_config']['autosave_interval'],
             ':cache_exp_time'		   => $params['wordpress_wp_config']['cache_exp_time'],
             ':WP_DEFAULT_THEME'		   => $params['wordpress_wp_config']['WP_DEFAULT_THEME']
         );
 
         // Get the wp-config template file content.
         $wpConfig = file_get_contents(__DIR__ . '/../../../templates/wp-config.php-dist');
-
+		$wpIndex = file_get_contents(__DIR__ . '/../../../templates/index.php-dist')
         // Replace tokens with values.
         $wpConfig = str_replace(
             array_keys($wpConfigParams),
@@ -155,8 +145,14 @@ class InstallerTasks {
             $wpConfig
         );
 
+        $wpIndex = str_replace(
+            array_keys($wpConfigParams),
+            $wpConfigParams,
+            $wpConfig
+        );		
         // Write the wp-config.php file.
-        file_put_contents($params['wordpress_coredir'] . '/wp-config.php', $wpConfig);
+        file_put_contents('./wp-config.php', $wpConfig);
+		file_put_contents('./index.php', $wpIndex);
     }
 
 }
