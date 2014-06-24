@@ -137,7 +137,7 @@ class InstallerTasks {
 
         // Get the wp-config template file content.
         $wpConfig = file_get_contents(__DIR__ . '/../../../templates/wp-config.php-dist');
-		$wpIndex = file_get_contents(__DIR__ . '/../../../templates/index.php-dist')
+		$wpIndex = file_get_contents(__DIR__ . '/../../../templates/index.php-dist');
         // Replace tokens with values.
         $wpConfig = str_replace(
             array_keys($wpConfigParams),
@@ -148,7 +148,7 @@ class InstallerTasks {
         $wpIndex = str_replace(
             array_keys($wpConfigParams),
             $wpConfigParams,
-            $wpConfig
+            $wpIndex
         );		
         // Write the wp-config.php file.
         file_put_contents('./wp-config.php', $wpConfig);
