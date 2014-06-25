@@ -211,5 +211,5 @@ class InstallerTasks {
 		exec($path . 'npm install');
 		exec($path . 'bower install');
 		exec($path . 'gulp build');
-	};
+	}
 }
