@@ -111,5 +111,5 @@ if (is_file(__DIR__ . '/:vendor_dir/autoload.php'))
 // Bootstrap WordPress
 // ===================
 if ( !defined( 'ABSPATH' ) )
-define( 'ABSPATH', dirname( __FILE__ ) . '/wp/' );
+define( 'ABSPATH', dirname( __FILE__ ) . '/:wp_core_dir/' );
 require_once( ABSPATH . 'wp-settings.php' );
