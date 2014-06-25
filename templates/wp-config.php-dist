@@ -85,8 +85,8 @@ define('WP_CONTENT_URL', ':site_url/:wp_content_dir');
 define('WP_PLUGIN_DIR', WP_CONTENT_DIR . '/plugins');
 define('PLUGINDIR', WP_CONTENT_DIR . '/plugins');
 
-//define('WP_SITEURL', ':site_url');
-//define('WP_HOME', ':site_url');
+define('WP_SITEURL', ':site_url/:wp_core_dir/');
+define('WP_HOME', ':site_url');
 
 define('WP_PLUGIN_URL', WP_CONTENT_URL . '/plugins');
 define('UPLOADS', '', WP_CONTENT_URL . '/uploads');
