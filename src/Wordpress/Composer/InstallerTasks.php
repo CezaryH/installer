@@ -31,6 +31,11 @@ class InstallerTasks {
         'wordpress_wp_config'    => array(
 			'wp_content_dir'	 => 'wordpress/wp-content',
 			'wp_core_dir'        => 'wordpress/core',
+			'wp_title'			 => 'another blog on wordpress',
+			'wp_admin'			 => 'admin',
+			'wp_password'		 => 'admin',
+			'wp_admin_email'	 => 'admin@admin.pl',
+			'wp_is_public'		 => true,
 			'vendor-dir'         => null,		
             'site_url'           => 'http://localhost',
             'db_host'            => 'localhost',
@@ -67,6 +72,19 @@ class InstallerTasks {
 		return $a;
 	}
 	
+	private static function getExtra(Event $event){
+        // Get the params from the class and merge
+        // any defined inside composer.json file.
+        //$params = self::$params;
+        $params = self::$params;
+		$extra  = $event->getComposer()->getPackage()->getExtra();
+		
+        if (is_array($extra))
+        {
+			$params = InstallerTasks::array_extend($params, $extra);
+        }
+		return $params;
+	}
     /**
      * Generate a wp-config.php and place it into
      * the wordpress core folder.
@@ -77,15 +95,7 @@ class InstallerTasks {
      */
     public static function wpConfig(Event $event)
     {
-        // Get the params from the class and merge
-        // any defined inside composer.json file.
-        //$params = self::$params;
-        $extra  = $event->getComposer()->getPackage()->getExtra();
-
-        if (is_array($extra))
-        {
-			$params = InstallerTasks::array_extend(self::$params, $extra);
-        }
+		$params = self::getExtra($event);
 
         // Generate the auth salts or use default values.
         if (true === $params['wordpress_wp_config']['generate_auth_keys'])
@@ -147,6 +157,59 @@ class InstallerTasks {
         // Write the wp-config.php file.
         file_put_contents('./wp-config.php', $wpConfig);
 		file_put_contents('./index.php', $wpIndex);
+		
+		echo 'wp-config created';
     }
+    /**
+     * install wp with default settings
+     *
+     * @access public
+     * @param  Event  $event Event object
+     * @return void
+     */
+    public static function installWP(Event $event){
+		$params = self::getExtra($event);
+		$url = $params['wordpress_wp_config']['site_url'] . '/' . $params['wordpress_wp_config']['wp_core_dir'] . '/wp-admin/install.php?step=2';
+		$fields = array(
+			"weblog_title" 		=> $params['wordpress_wp_config']['wp_title'],
+			"user_name" 		=> $params['wordpress_wp_config']['wp_admin'],
+			"admin_password" 	=> $params['wordpress_wp_config']['wp_password'],
+			"admin_password2" 	=> $params['wordpress_wp_config']['wp_password'],
+			"admin_email" 		=> $params['wordpress_wp_config']['wp_admin_email'],
+			"blog_public" 		=> (true == $params['wordpress_wp_config']['wp_is_public']) ? 1 : 0
+		);
+		
+		$fields_string = '';
+		foreach($fields as $key=>$value) { $fields_string .= $key.'='.$value.'&'; }
+		rtrim($fields_string, '&');
+		
+		echo '----------about to install wp-----------';
+		//open connection
+		$ch = curl_init();
 
+		//set the url, number of POST vars, POST data
+		curl_setopt($ch,CURLOPT_URL, $url);
+		curl_setopt($ch,CURLOPT_POST, count($fields));
+		curl_setopt($ch,CURLOPT_POSTFIELDS, $fields_string);
+
+		//execute post
+		$result = curl_exec($ch);
+		
+		if($result){
+		// TODO : check result and show proper information
+			echo '----------wordpress succesifully installed-----------';
+		}
+		//close connection
+		curl_close($ch);		
+	}
+	
+	public static function buildTemplate(Event $event){
+		$params = self::getExtra($event);
+		$path = realpath(__DIR__ . '/../../../../../../') . '/' . $params['wordpress_wp_config']['wp_content_dir'] . '/themes/' . $params['wordpress_wp_config']['WP_DEFAULT_THEME'] . '/src/';
+		
+		echo $path;
+		exec($path . 'npm install');
+		exec($path . 'bower install');
+		exec($path . 'gulp build');
+	};
 }

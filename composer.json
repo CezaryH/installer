@@ -6,7 +6,11 @@
         {
             "name": "Brian Greenacre",
             "email": "bgreenacre42@gmail.com"
-        }
+        },
+        {
+            "name": "Cezary Haller",
+            "email": "cezary.haller@gmail.com"
+        }		
     ],
     "autoload": {
         "psr-0": { "Wordpress\\Composer":  "src/" }
