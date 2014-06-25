@@ -207,9 +207,12 @@ class InstallerTasks {
 		$params = self::getExtra($event);
 		$path = realpath(__DIR__ . '/../../../../../../') . '/' . $params['wordpress_wp_config']['wp_content_dir'] . '/themes/' . $params['wordpress_wp_config']['WP_DEFAULT_THEME'] . '/src/';
 		
-		echo $path;
-		exec($path . 'npm install');
-		exec($path . 'bower install');
-		exec($path . 'gulp build');
+		chdir($path);
+		exec('npm install');
+		echo "\n" . 'npm install Done';
+		exec('bower install');
+		echo "\n" . 'bower install Done';
+		exec('gulp build');
+		echo "\n" . 'gulp build Done';
 	}
 }
