@@ -47,13 +47,14 @@ class InstallerTasks {
             'db_prefix'          => 'wp_',
             'generate_auth_keys' => true,
             'wp_lang'            => '',
-            'wp_debug'           => false,
+            'wp_debug'           => true,
             'disallow_file_edit' => false,
 			'wp_uploads_dir'	 => null,
             'wp_post_revisions'  => false,
             'wp_cache' 			 => false,
             'autosave_interval'  => 360,
-            'cache_exp_time' 	 => 0
+            'cache_exp_time' 	 => 0,
+			'wp_default_theme' 	 => 'Twenty Fourteen'
         )
     );
 	
@@ -136,7 +137,7 @@ class InstallerTasks {
 			':wp_cache'				   => (false !== $params['wordpress_wp_config']['wp_cache']) ? 'true' : 'false',
             ':autosave_interval'  	   => $params['wordpress_wp_config']['autosave_interval'],
             ':cache_exp_time'		   => $params['wordpress_wp_config']['cache_exp_time'],
-            ':WP_DEFAULT_THEME'		   => $params['wordpress_wp_config']['WP_DEFAULT_THEME']
+            ':wp_default_theme'		   => $params['wordpress_wp_config']['wp_default_theme']
         );
 
         // Get the wp-config template file content.
