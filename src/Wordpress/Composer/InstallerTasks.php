@@ -206,8 +206,8 @@ class InstallerTasks {
 	
 	public static function buildTemplate(Event $event){
 		$params = self::getExtra($event);
-		if($params['wordpress_wp_config']['wp_theme_src']){
-			$path = realpath(__DIR__ . '/../../../../../../') . '/' . $params['wordpress_wp_config']['wp_theme_src'];
+		if($params['wordpress_wp_config']['node']){
+			$path = realpath(__DIR__ . '/../../../../../../') . '/' . $params['wordpress_wp_config']['wp_content_dir'] . '/themes/' . $params['wordpress_wp_config']['wp_default_theme'] . '/src';
 		} else {
 			throw new Exception('please set wp_theme_src');
 			return;
