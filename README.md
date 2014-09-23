@@ -1,6 +1,8 @@
-Default settings
-'extra' : {
-	'wordpress_wp_config'   : {
+    
+    Default settings for wp installation
+    
+    'extra' : {
+        'wordpress_wp_config'   : {
 		'wp_content_dir'	: 'wordpress/wp-content',
 		'wp_core_dir'       : 'wordpress/core',
 		'vendor-dir'        : null,		
@@ -22,4 +24,4 @@ Default settings
 		'autosave_interval' : 360,
 		'cache_exp_time' 	: 0
 	}
-}
+    }
