@@ -47,14 +47,13 @@ class InstallerTasks {
             'db_prefix'          => 'wp_',
             'generate_auth_keys' => true,
             'wp_lang'            => '',
-            'wp_debug'           => true,
+            'wp_debug'           => false,
             'disallow_file_edit' => false,
-			'wp_uploads_dir'	 => null,
+	    'wp_uploads_dir'	 => null,
             'wp_post_revisions'  => false,
-            'wp_cache' 			 => false,
+            'wp_cache' 		 => false,
             'autosave_interval'  => 360,
-            'cache_exp_time' 	 => 0,
-			'wp_default_theme' 	 => 'Twenty Fourteen'
+            'cache_exp_time' 	 => 0
         )
     );
 	
@@ -137,7 +136,7 @@ class InstallerTasks {
 			':wp_cache'				   => (false !== $params['wordpress_wp_config']['wp_cache']) ? 'true' : 'false',
             ':autosave_interval'  	   => $params['wordpress_wp_config']['autosave_interval'],
             ':cache_exp_time'		   => $params['wordpress_wp_config']['cache_exp_time'],
-            ':wp_default_theme'		   => $params['wordpress_wp_config']['wp_default_theme']
+            ':WP_DEFAULT_THEME'		   => $params['wordpress_wp_config']['WP_DEFAULT_THEME']
         );
 
         // Get the wp-config template file content.
@@ -206,8 +205,8 @@ class InstallerTasks {
 	
 	public static function buildTemplate(Event $event){
 		$params = self::getExtra($event);
-		if($params['wordpress_wp_config']['node']){
-			$path = realpath(__DIR__ . '/../../../../../../') . '/' . $params['wordpress_wp_config']['wp_content_dir'] . '/themes/' . $params['wordpress_wp_config']['wp_default_theme'] . '/src';
+		if($params['wordpress_wp_config']['wp_theme_src']){
+			$path = realpath(__DIR__ . '/../../../../../../') . '/' . $params['wordpress_wp_config']['wp_theme_src'];
 		} else {
 			throw new Exception('please set wp_theme_src');
 			return;

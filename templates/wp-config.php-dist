@@ -92,7 +92,7 @@ define('WP_PLUGIN_URL', WP_CONTENT_URL . '/plugins');
 define('UPLOADS', '', WP_CONTENT_URL . '/uploads');
 define('DISALLOW_FILE_EDIT', :disallow_file_edit);
 
-define('wp_default_theme', ':wp_default_theme');
+define('WP_DEFAULT_THEME', ':WP_DEFAULT_THEME');
 
 // ======================================
 // Load a Memcached config if we have one
