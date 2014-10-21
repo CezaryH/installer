@@ -136,7 +136,8 @@ class InstallerTasks {
 			':wp_cache'				   => (false !== $params['wordpress_wp_config']['wp_cache']) ? 'true' : 'false',
             ':autosave_interval'  	   => $params['wordpress_wp_config']['autosave_interval'],
             ':cache_exp_time'		   => $params['wordpress_wp_config']['cache_exp_time'],
-            ':WP_DEFAULT_THEME'		   => $params['wordpress_wp_config']['WP_DEFAULT_THEME']
+            ':WP_DEFAULT_THEME'		   => $params['wordpress_wp_config']['WP_DEFAULT_THEME'],
+			':wp_mupl_dir'			   => $params['wordpress_wp_config']['wp_mupl_dir']
         );
 
         // Get the wp-config template file content.
@@ -176,7 +177,7 @@ class InstallerTasks {
 			"admin_password" 	=> $params['wordpress_wp_config']['wp_password'],
 			"admin_password2" 	=> $params['wordpress_wp_config']['wp_password'],
 			"admin_email" 		=> $params['wordpress_wp_config']['wp_admin_email'],
-			"blog_public" 		=> (true == $params['wordpress_wp_config']['wp_is_public']) ? 1 : 0
+			"blog_public" 		=> (true == $params['wordpress_wp_config']['wp_is_public']) ? 1 : 0,
 		);
 		
 		$fields_string = '';

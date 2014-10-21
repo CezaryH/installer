@@ -94,6 +94,9 @@ define('DISALLOW_FILE_EDIT', :disallow_file_edit);
 
 define('WP_DEFAULT_THEME', ':WP_DEFAULT_THEME');
 
+define('WPMU_PLUGIN_DIR', dirname(__FILE__) . :wp_mupl_dir);
+define('WPMU_PLUGIN_URL', WP_HOME . :wp_mupl_dir);
+
 // ======================================
 // Load a Memcached config if we have one
 // ======================================

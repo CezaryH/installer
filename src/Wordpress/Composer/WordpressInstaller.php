@@ -29,7 +29,7 @@ class WordpressInstaller extends LibraryInstaller {
      */
     protected $_types = array(
         'wordpress-plugin',
-	'wordpress-muplugin',
+		'wordpress-muplugin',
         'wordpress-theme',
         'wordpress-core',
     );
@@ -83,8 +83,8 @@ class WordpressInstaller extends LibraryInstaller {
                 $installPath = $wpContentPath . '/plugins/' . trim($path, '/');
 		
                 break;
-            case 'wordpress-mu plugin':
-                $installPath = $wpContentPath . '/plugins/' . trim($path, '/');
+            case 'wordpress-muplugin':
+                $installPath = $wpContentPath . $extra['wordpress_wp_config']['wp_mupl_dir'] . trim($path, '/');
 
 		break;
             case 'wordpress-theme':
