@@ -84,7 +84,7 @@ class WordpressInstaller extends LibraryInstaller {
 		
                 break;
             case 'wordpress-muplugin':
-                $installPath = $wpContentPath . $extra['wordpress_wp_config']['wp_mupl_dir'] . trim($path, '/');
+                $installPath = $wpContentPath . '/' . $extra['wordpress_wp_config']['wp_mupl_dir'] . '/' . trim($path, '/');
 
 		break;
             case 'wordpress-theme':
